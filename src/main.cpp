@@ -106,6 +106,7 @@ void setAllBlue() {
 void setAllIndigo() {
   for (int i = 0; i < NUM_LEDS; i++) {
     leds[i] = CRGB(75, 0, 130); 
+  }
   FastLED.show();
 }
 
