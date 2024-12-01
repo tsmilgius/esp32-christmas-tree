@@ -77,7 +77,7 @@ void setAllRed() {
 
 void setAllOrange() {
   for (int i = 0; i < NUM_LEDS; i++) {
-    leds[i] = CRGB::Orange;
+    leds[i] = CRGB::DarkOrange;
   }
   FastLED.show();
 }
@@ -137,7 +137,7 @@ void blinkPattern() {
     lastPatternUpdateTime = millis();
     on = !on;
     for (int i = 0; i < NUM_LEDS; i++) {
-      leds[i] = on ? CRGB::White : CRGB::Black;
+      leds[i] = on ? CRGB::DarkOrange : CRGB::Black;
     }
     FastLED.show();
   }
@@ -152,6 +152,122 @@ void chasePattern() {
     }
     leds[pos] = CRGB::White;
     pos = (pos + 1) % NUM_LEDS;
+    FastLED.show();
+  }
+}
+
+void lightUpPattern() {
+  const int firstArrow[] = {0, 27, 52, 75, 96, 115, 132, 147, 160, 171, 180, 187};
+const int secondArrow[] = {3, 30, 55, 78, 99, 118, 135, 150, 163, 174, 182, 188};
+//const int thirdArrow[] = {6, 33, 58, 81, 102, 121, 138, 153};
+//const int fourthArrow[] = {9, 36, 61, 84, 105};
+// const int fifthArrow[] = {12, 39};
+// //const int sixthArrow[] = {14};
+// const int seventhArrow[] = {17, 42, 65, 86};
+// const int eightArrow[] = {20, 45, 68, 89, 108, 125, 140};
+ const int ninthArrow[] = {23, 48, 71, 92, 111, 128, 143, 156, 167, 176, 184, 190};
+ const int tenthArrow[] = {26, 51, 74, 95, 114, 131, 146, 159, 170, 179, 186, 191};
+  static int currentPixel = 0;
+  static unsigned long lastUpdateTime = 0;
+
+  // Clear all LEDs initially
+  if (currentPixel == 0) {
+    FastLED.clear();
+  }
+
+
+  // Check if 30 milliseconds have passed
+  if (millis() - lastUpdateTime >= 50) {
+    lastUpdateTime = millis();
+
+    // Set the current pixel to white
+    leds[firstArrow[currentPixel]] = CRGB::Red;
+    leds[secondArrow[currentPixel]] = CRGB::Orange;
+    //leds[thirdArrow[currentPixel]] = CRGB::OrangeRed;
+    //leds[fourthArrow[currentPixel]] = CRGB::Yellow;
+    // leds[fifthArrow[currentPixel]] = CRGB::Green;
+    //leds[sixthArrow[currentPixel]] = CRGB::DarkGreen;
+    // leds[seventhArrow[currentPixel]] = CRGB::DarkCyan;
+    // leds[eightArrow[currentPixel]] = CRGB::DarkBlue;
+    leds[ninthArrow[currentPixel]] = CRGB::DarkViolet;
+    leds[tenthArrow[currentPixel]] = CRGB::Indigo;
+
+    // Show the updated LED array
+    FastLED.show();
+
+    // Move to the next pixel
+    currentPixel++;
+
+    // Reset if all pixels are lit
+    if (currentPixel >= sizeof(firstArrow) / sizeof(firstArrow[0])) {
+      currentPixel = 0;
+    }
+     if (currentPixel >= sizeof(secondArrow) / sizeof(secondArrow[0])) {
+      currentPixel = 0;
+    }
+    //  if (currentPixel >= sizeof(thirdArrow) / sizeof(thirdArrow[0])) {
+    //   currentPixel = 0;
+    // }
+    // if (currentPixel >= sizeof(fourthArrow) / sizeof(fourthArrow[0])) {
+    //   currentPixel = 0;
+    //  }
+    // if (currentPixel >= sizeof(fifthArrow) / sizeof(fifthArrow[0])) {
+    //   currentPixel = 0;
+    // }
+    // if (currentPixel >= sizeof(sixthArrow) / sizeof(sixthArrow[0])) {
+    //   currentPixel = 0;
+    // }
+    // if (currentPixel >= sizeof(seventhArrow) / sizeof(seventhArrow[0])) {
+    //   currentPixel = 0;
+    // }
+    // if (currentPixel >= sizeof(eightArrow) / sizeof(eightArrow[0])) {
+    //   currentPixel = 0;
+    // }
+    if (currentPixel >= sizeof(ninthArrow) / sizeof(ninthArrow[0])) {
+      currentPixel = 0;
+    }
+    if (currentPixel >= sizeof(tenthArrow) / sizeof(tenthArrow[0])) {
+      currentPixel = 0;
+    }
+  }
+}
+
+
+void sinelon(CRGB *leds) {
+  fadeToBlackBy(leds, NUM_LEDS, 20);
+  int pos = beatsin16(13, 0, NUM_LEDS - 1);
+  leds[pos] += CHSV(12, 255, 255);
+  FastLED.show();
+}
+
+void meetInMiddlePattern() {
+  static int pos1 = 0;
+  static int pos2 = NUM_LEDS - 1;
+  static bool burst = false;
+  static unsigned long lastPatternUpdateTime = 0;
+
+  if (millis() - lastPatternUpdateTime >= 50) {
+    lastPatternUpdateTime = millis();
+
+    if (!burst) {
+      for (int i = 0; i < NUM_LEDS; i++) {
+        leds[i] = CRGB::Black;
+      }
+      leds[pos1] = CRGB::Red;
+      leds[pos2] = CRGB::Green;
+
+      pos1++;
+      pos2--;
+
+      if (pos1 >= pos2) {
+        burst = true;
+      }
+    } else {
+      for (int i = 0; i < NUM_LEDS; i++) {
+        leds[i] = CHSV((i * 256 / NUM_LEDS + millis() / 10) % 256, 255, 255);
+      }
+    }
+
     FastLED.show();
   }
 }
