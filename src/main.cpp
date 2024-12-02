@@ -259,6 +259,14 @@ void lightUpWithTrailAndBurst() {
       }
     }
   }
+
+  fill_solid(leds, NUM_LEDS, CRGB::Red);  // Burst color
+  FastLED.show();
+  for (int brightness = 255; brightness >= 0; brightness -= 5) {
+    FastLED.setBrightness(brightness);
+    FastLED.show();
+    delay(20); // Adjust delay for fade out speed
+  }
 }
 
 void sinelon(CRGB *leds) {
