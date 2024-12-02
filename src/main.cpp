@@ -232,6 +232,34 @@ const int secondArrow[] = {3, 30, 55, 78, 99, 118, 135, 150, 163, 174, 182, 188}
   }
 }
 
+void lightUpWithTrailAndBurst() {
+  fill_solid(leds, NUM_LEDS, CRGB::Black); // Ensure all LEDs start off
+  FastLED.show();
+  int row_start[] = {0, 27, 52, 75, 96, 115, 132, 147, 160, 171, 180, 192};
+  int row_end[] =   {26, 51, 74, 95, 114, 131, 146, 159, 170, 179, 191, 194};
+  
+  for (int row = 0; row < 12; row++) {
+    if (row % 2 == 0) {
+      // Left to right
+      for (int i = row_start[row]; i <= row_end[row]; i++) {
+        leds[i] = CRGB::White;
+        if (i > row_start[row]) leds[i - 1] = CRGB::Blue; // Trail effect
+        if (i > row_start[row] + 1) leds[i - 2] = CRGB::Black; // Fade out
+        FastLED.show();
+        delay(10); // Adjust delay for trail speed
+      }
+    } else {
+      // Right to left
+      for (int i = row_end[row]; i >= row_start[row]; i--) {
+        leds[i] = CRGB::White;
+        if (i < row_end[row]) leds[i + 1] = CRGB::Blue; // Trail effect
+        if (i < row_end[row] - 1) leds[i + 2] = CRGB::Black; // Fade out
+        FastLED.show();
+        delay(10); // Adjust delay for trail speed
+      }
+    }
+  }
+}
 
 void sinelon(CRGB *leds) {
   fadeToBlackBy(leds, NUM_LEDS, 20);
